@@ -1,0 +1,29 @@
+body {
+	background-color: #434A54;
+}
+
+.timer {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 300px;
+	height: 300px;
+	border-radius: 100%;
+	border: #48CFAD solid 2px;
+	color: #37BC9B;
+	font-size: 3rem;
+	cursor: pointer;
+}
+
+.timer div {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.interval {
+	display: inline-block;
+}
+
