@@ -1,5 +1,6 @@
 body {
 	background-color: #434A54;
+	color: #FFCE54;
 }
 
 .timer {
@@ -25,5 +26,11 @@ body {
 
 .interval {
 	display: inline-block;
+	font-size: 20px;
 }
 
+.change {
+	cursor: pointer;
+	font-size: 24px;
+	padding: 10px;
+}
