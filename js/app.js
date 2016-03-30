@@ -11,6 +11,13 @@ $(document).ready(function () {
   var currentBreakLength   = defaultBreakLength;
   var currentSessionLength = defaultSessionLength;
   var $timerInt = $('#timer-int');
+  var mins;
+  var secs;
+  var isInSession = true;
+  var isTimerOn = false;
+  var $timer = $('.timer');
+  //use the date to get session length in milliseconds
+  var duration = Date.now() + (currentSessionLength * 60000) - Date.now();
 
   /*
     add click event listener to the incrementers and change the session/break
@@ -40,7 +47,8 @@ $(document).ready(function () {
       currentSessionLength--;
 
       $sessionInt.html(currentSessionLength);
-      $timerInt.html(currentSessionLength);
+      $timerInt.html(currentSessionLength + ':00');
+      duration = Date.now() + (currentSessionLength * 60000) - Date.now();
     }
 
   });
@@ -49,8 +57,49 @@ $(document).ready(function () {
 
     currentSessionLength++;
     $sessionInt.html(currentSessionLength);
-    $timerInt.html(currentSessionLength);
+    $timerInt.html(currentSessionLength + ':00');
+    duration = Date.now() + (currentSessionLength * 60000) - Date.now();
 
   });
+
+  /**
+    End of event click listeners/handlers for intervals
+  */
+
+  /**
+    create the countdown timer for the clock using setInterval
+  */
+
+  $timer.on('click', function () {
+
+    isTimerOn = !isTimerOn;
+
+  });
+
+  setInterval(function () {
+
+    if (duration === 0) {
+      isTimerOn = false;
+    }
+
+    if (isTimerOn) {
+
+        secs = Math.floor((duration / 1000) % 60);
+        mins = Math.floor((duration / 1000 / 60) % 60);
+
+        var str = mins + ':';
+
+        if (secs < 10) {
+          str += '0' + secs;
+        }
+        else {
+          str += secs;
+        }
+
+        $timerInt.text(str);
+        duration -= 1000;
+    }
+
+  }, 1000);
 
 });
