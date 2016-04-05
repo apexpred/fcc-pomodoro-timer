@@ -19,6 +19,8 @@ $(document).ready(function () {
   var isSessionTimerOn = false;
   var isBreakTimerOn = false;
   var $timer = $('.timer');
+  var currentTimer = 't';
+
   //use the date to get session length in milliseconds
   var sessionDuration = Date.now() + (currentSessionLength * 60000) - Date.now();
   var breakDuration = Date.now() + (currentBreakLength * 60000) - Date.now();
@@ -80,7 +82,12 @@ $(document).ready(function () {
 
   $timer.on('click', function () {
 
-    isSessionTimerOn = !isSessionTimerOn;
+    if (currentTimer === 't') {
+      isSessionTimerOn = !isSessionTimerOn;
+    }
+    else if (currentTimer === 'b') {
+      isBreakTimerOn = !isBreakTimerOn;
+    }
 
   });
 
@@ -92,14 +99,14 @@ $(document).ready(function () {
     if (sessionDuration < 0) {
       isSessionTimerOn = false;
       isBreakTimerOn = true;
-
+      currentTimer = 'b';
       $timerInt.text(currentBreakLength + ":00");
       sessionDuration = Date.now() + (currentSessionLength * 60000) - Date.now();
     }
     else if (breakDuration < 0) {
       isBreakTimerOn = false;
       isSessionTimerOn = true;
-
+      currentTimer = 't';
       $timerInt.text(currentSessionLength + ":00");
       breakDuration = Date.now() + (currentBreakLength * 60000) - Date.now();
     }
