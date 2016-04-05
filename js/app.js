@@ -78,7 +78,7 @@ $(document).ready(function () {
 
   setInterval(function () {
 
-    if (duration === 0) {
+    if (duration < 0) {
       isTimerOn = false;
     }
 
