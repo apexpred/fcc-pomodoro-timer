@@ -11,13 +11,17 @@ $(document).ready(function () {
   var currentBreakLength   = defaultBreakLength;
   var currentSessionLength = defaultSessionLength;
   var $timerInt = $('#timer-int');
-  var mins;
-  var secs;
+  var sessionMins;
+  var sessionSecs;
+  var breakMins;
+  var breakSecs;
   var isInSession = true;
-  var isTimerOn = false;
+  var isSessionTimerOn = false;
+  var isBreakTimerOn = false;
   var $timer = $('.timer');
   //use the date to get session length in milliseconds
-  var duration = Date.now() + (currentSessionLength * 60000) - Date.now();
+  var sessionDuration = Date.now() + (currentSessionLength * 60000) - Date.now();
+  var breakDuration = Date.now() + (currentBreakLength * 60000) - Date.now();
 
   /*
     add click event listener to the incrementers and change the session/break
@@ -30,6 +34,8 @@ $(document).ready(function () {
     if (currentBreakLength - 1 > 0) {
       currentBreakLength--;
       $breakInt.html(currentBreakLength);
+
+      breakDuration = Date.now() + (currentBreakLength * 60000) - Date.now();
     }
 
   });
@@ -38,6 +44,8 @@ $(document).ready(function () {
 
     currentBreakLength++;
     $breakInt.html(currentBreakLength);
+
+    breakDuration = Date.now() + (currentBreakLength * 60000) - Date.now();
 
   });
 
@@ -48,7 +56,7 @@ $(document).ready(function () {
 
       $sessionInt.html(currentSessionLength);
       $timerInt.html(currentSessionLength + ':00');
-      duration = Date.now() + (currentSessionLength * 60000) - Date.now();
+      sessionDuration = Date.now() + (currentSessionLength * 60000) - Date.now();
     }
 
   });
@@ -58,7 +66,7 @@ $(document).ready(function () {
     currentSessionLength++;
     $sessionInt.html(currentSessionLength);
     $timerInt.html(currentSessionLength + ':00');
-    duration = Date.now() + (currentSessionLength * 60000) - Date.now();
+    sessionDuration = Date.now() + (currentSessionLength * 60000) - Date.now();
 
   });
 
@@ -72,32 +80,67 @@ $(document).ready(function () {
 
   $timer.on('click', function () {
 
-    isTimerOn = !isTimerOn;
+    isSessionTimerOn = !isSessionTimerOn;
 
   });
 
   setInterval(function () {
 
-    if (duration < 0) {
-      isTimerOn = false;
+    console.log('Session duration: ' + sessionDuration);
+    console.log('Break duration ' + breakDuration);
+
+    if (sessionDuration < 0) {
+      isSessionTimerOn = false;
+      isBreakTimerOn = true;
+
+      $timerInt.text(currentBreakLength + ":00");
+      sessionDuration = Date.now() + (currentSessionLength * 60000) - Date.now();
+    }
+    else if (breakDuration < 0) {
+      isBreakTimerOn = false;
+      isSessionTimerOn = true;
+
+      $timerInt.text(currentSessionLength + ":00");
+      breakDuration = Date.now() + (currentBreakLength * 60000) - Date.now();
     }
 
-    if (isTimerOn) {
+    if (isSessionTimerOn) {
 
-        secs = Math.floor((duration / 1000) % 60);
-        mins = Math.floor((duration / 1000 / 60) % 60);
+        sessionSecs = Math.floor((sessionDuration / 1000) % 60);
+        sessionMins = Math.floor((sessionDuration / 1000 / 60) % 60);
 
-        var str = mins + ':';
+        var str = sessionMins + ':';
 
-        if (secs < 10) {
-          str += '0' + secs;
+        if (sessionSecs < 10) {
+          str += '0' + sessionSecs;
         }
         else {
-          str += secs;
+          str += sessionSecs;
         }
 
         $timerInt.text(str);
-        duration -= 1000;
+        sessionDuration -= 1000;
+    }
+
+    if (isBreakTimerOn) {
+
+
+      breakSecs = Math.floor((breakDuration / 1000) % 60);
+      breakMins = Math.floor((breakDuration / 1000 / 60) % 60);
+
+      str = breakMins + ':';
+
+      if(breakSecs < 10) {
+        str += '0' + breakSecs;
+      }
+      else  {
+        str += breakSecs;
+      }
+
+      $timerInt.text(str);
+
+      breakDuration -= 1000;
+
     }
 
   }, 1000);
